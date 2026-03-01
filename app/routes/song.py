@@ -1,7 +1,7 @@
 import uuid
 
 from fastapi import APIRouter, Depends, File, Form, UploadFile
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.database import get_db
 from app.middleware.auth_middleware import auth_middleware
 import cloudinary
@@ -92,5 +92,5 @@ def favorite_song(
 @router.get("/favorites")
 def favorite_songs(db: Session = Depends(get_db), auth_details=Depends(auth_middleware)):
     user_id = auth_details["uid"]
-    user_song= db.query(Favorite).filter(Favorite.user_id == user_id).first()
+    user_song= db.query(Favorite).filter(Favorite.user_id == user_id).options(joinedload(Favorite.song)).all()
     return user_song
