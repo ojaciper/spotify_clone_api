@@ -59,6 +59,7 @@ def songs(db: Session = Depends(get_db), auth_details=Depends(auth_middleware)):
     return song
 
 
+
 @router.post("/favorite")
 def favorite_song(
     fav_song: FavoriteSong,
@@ -67,13 +68,13 @@ def favorite_song(
 ):
     user_id = auth_details["uid"]
 
-    fav_song = (
+    song = (
         db.query(Favorite)
         .filter(Favorite.song_id == fav_song.song_id, Favorite.user_id == user_id)
         .first()
     )
-    if fav_song:
-        db.delete(fav_song)
+    if song:
+        db.delete(song)
         db.commit()
         return {"message": False}
 
@@ -86,3 +87,10 @@ def favorite_song(
         return{
             "message":True
         }
+
+
+@router.get("/favorites")
+def favorite_songs(db: Session = Depends(get_db), auth_details=Depends(auth_middleware)):
+    user_id = auth_details["uid"]
+    user_song= db.query(Favorite).filter(Favorite.user_id == user_id).first()
+    return user_song
