@@ -55,6 +55,7 @@ def upload_song(
 
 @router.get("/song")
 def songs(db: Session = Depends(get_db), auth_details=Depends(auth_middleware)):
+    print(auth_details)
     song = db.query(Song).all()
     return song
 

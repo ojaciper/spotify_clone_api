@@ -53,7 +53,8 @@ def current_user(
     db: Session = Depends(get_db),
     user_dict=Depends(auth_middleware),
 ):
-    user = db.query(User).filter(User.id == user_dict["id"]).first()
+    print(user_dict['uid'])
+    user = db.query(User).filter(User.id == str(user_dict["uid"])).first()
     if not user:
         raise HTTPException(404,"User not found")
     return user
